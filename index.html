@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flower with Orbiting kupal</title>
+  <style>
+    canvas {
+      background-color: white;
+      display: block;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="flowerCanvas" width="600" height="600"></canvas>
+
+<script>
+  const canvas = document.getElementById('flowerCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let angle = 0;
+  let textAngle = 0;
+
+  function drawFlower(centerX, centerY, radius, petalCount, angleOffset, textOrbitAngle) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+
+    const angleBetweenPetals = (2 * Math.PI) / petalCount;
+
+    // Draw petals
+    ctx.fillStyle = 'pink';
+    for (let i = 0; i < petalCount; i++) {
+      const angle = i * angleBetweenPetals + angleOffset;
+      const petalX = Math.cos(angle) * radius;
+      const petalY = Math.sin(angle) * radius;
+      ctx.beginPath();
+      ctx.ellipse(petalX, petalY, 30, 30, 0, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    // Draw center
+    ctx.fillStyle = 'yellow';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 40, 40, 0, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Moving text
+    const orbitRadius = 150;
+    const textX = Math.cos(textOrbitAngle) * orbitRadius;
+    const textY = Math.sin(textOrbitAngle) * orbitRadius;
+
+    ctx.fillStyle = 'black';
+    ctx.font = 'bold 24px Comic Sans MS';
+    const message = 'kupal';
+    const textWidth = ctx.measureText(message).width;
+    ctx.fillText(message, textX - textWidth / 2, textY + 10);
+
+    ctx.restore();
+  }
+
+  function animate() {
+    angle += 0.03;
+    textAngle += 0.015;
+    drawFlower(canvas.width / 2, canvas.height / 2, 100, 8, angle, textAngle);
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>
+
+</body>
+</html>
